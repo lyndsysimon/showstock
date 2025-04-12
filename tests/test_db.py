@@ -4,9 +4,10 @@ Tests for the database connection utility.
 
 import os
 import pytest
-from unittest.mock import patch, AsyncMock
+from unittest.mock import patch, AsyncMock, ANY
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import text
 
 from showstock.config import Settings, DatabaseSettings
 from showstock.db import get_db, get_db_session, init_db, close_db
@@ -59,7 +60,11 @@ async def test_init_db(mock_engine):
     await init_db()
 
     # Verify the connection was tested
-    mock_conn.execute.assert_called_once_with("SELECT 1")
+    mock_conn.execute.assert_called_once_with(ANY)
+    # Get the actual argument passed to execute
+    actual_arg = mock_conn.execute.call_args[0][0]
+    # Verify it's a TextClause with the correct SQL
+    assert str(actual_arg) == "SELECT 1"
 
 
 @pytest.mark.asyncio
