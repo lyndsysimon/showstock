@@ -42,6 +42,7 @@ jobs:
         docker run --name test-container --network host \
           -e DATABASE_URL=postgresql://postgres:postgres@localhost:5432/showstock_test \
           -e PYTHONPATH=/app \
+          -e PYTHONUNBUFFERED=1 \
           showstock-tests \
           pytest --cov=showstock --cov-report=term --cov-report=xml:/app/coverage.xml
         
