@@ -13,15 +13,13 @@ RUN apt-get update && apt-get install -y \
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 ENV PATH="/root/.local/bin:$PATH"
 
-# Copy requirements files
-COPY requirements.txt .
-COPY requirements-dev.txt .
+# Copy pyproject.toml
 COPY pyproject.toml .
 
 # Install dependencies using uv
 RUN uv venv /app/.venv && \
     . /app/.venv/bin/activate && \
-    uv pip install --no-cache-dir -r requirements.txt -r requirements-dev.txt
+    uv pip install --no-cache-dir -e ".[dev]"
 
 # Copy application code
 COPY . .

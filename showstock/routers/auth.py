@@ -53,4 +53,4 @@ async def logout(current_user: User = Depends(get_current_user)):
     """Logout endpoint."""
     # In a JWT system, logout is handled client-side by removing the token
     # This endpoint is provided for API consistency
-    return {"message": "Successfully logged out"} 
+    return {"message": "Successfully logged out"}

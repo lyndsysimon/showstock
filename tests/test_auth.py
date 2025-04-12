@@ -97,4 +97,4 @@ async def test_logout(client: TestClient, db: AsyncSession):
 
     # Verify token is still valid (logout is client-side)
     response = client.get("/auth/status", headers=headers)
-    assert response.status_code == 200 
+    assert response.status_code == 200
