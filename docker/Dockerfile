@@ -12,12 +12,11 @@ RUN apt-get update && apt-get install -y \
 # Install uv
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Copy requirements files
-COPY requirements.txt .
-COPY pyproject.toml .
+# Copy project configuration
+COPY pyproject.toml ./
 
 # Install Python dependencies using uv
-RUN uv pip install --no-cache-dir -r requirements.txt
+RUN ~/.cargo/bin/uv pip install --no-cache-dir -e .
 
 # Copy application code
 COPY . .
