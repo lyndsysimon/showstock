@@ -26,4 +26,4 @@ ENV PYTHONUNBUFFERED=1 \
 RUN mkdir -p /app/coverage
 
 # Default command to run tests with coverage
-CMD ["pytest", "--cov=showstock", "--cov-report=term", "--cov-report=xml"]
+CMD ["pytest", "--cov=showstock", "--cov-report=term", "--cov-report=xml:/app/coverage.xml"]
