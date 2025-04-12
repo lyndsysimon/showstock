@@ -1,5 +1,6 @@
 [run]
 source = showstock
+data_file = /app/.coverage
 omit =
     */tests/*
     */migrations/*
@@ -14,3 +15,6 @@ exclude_lines =
     if __name__ == .__main__.:
     pass
     raise ImportError
+
+[xml]
+output = /app/coverage.xml
