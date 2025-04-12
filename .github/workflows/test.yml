@@ -12,7 +12,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:15
+        image: postgres:16
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -26,50 +26,38 @@ jobs:
           --health-retries 5
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
 
-    - name: Build and run tests
-      run: |
-        set -e  # Exit immediately if a command exits with a non-zero status
-        
-        echo "Building test Docker image..."
-        docker build -f docker/Dockerfile.tests -t showstock-tests .
-        
-        echo "Running tests and generating coverage report..."
-        docker run --name test-container --network host \
-          -e DATABASE_URL=postgresql://postgres:postgres@localhost:5432/showstock_test \
-          -e PYTHONPATH=/app \
-          -e PYTHONUNBUFFERED=1 \
-          showstock-tests \
-          pytest --cov=showstock --cov-report=term --cov-report=xml:/app/coverage.xml
-        
-        echo "Copying coverage.xml from container to host..."
-        if docker cp test-container:/app/coverage.xml ./coverage.xml; then
-          echo "Successfully copied coverage.xml from /app/coverage.xml"
-        elif docker cp test-container:/app/coverage/coverage.xml ./coverage.xml; then
-          echo "Successfully copied coverage.xml from /app/coverage/coverage.xml"
-        elif docker cp test-container:/coverage.xml ./coverage.xml; then
-          echo "Successfully copied coverage.xml from /coverage.xml"
-        else
-          echo "Searching for coverage.xml in container..."
-          docker exec test-container find / -name coverage.xml
-          echo "WARNING: Could not find coverage.xml in expected locations"
-          # Create an empty coverage file to prevent the workflow from failing
-          echo '<?xml version="1.0" ?><coverage version="1.0"></coverage>' > ./coverage.xml
-        fi
-        
-        echo "Verifying coverage.xml exists..."
-        ls -la ./coverage.xml
-        
-        echo "Cleaning up container..."
-        docker rm test-container
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage.xml
-        fail_ci_if_error: false
+      - name: Install dependencies
+        run: |
+          uv pip install --no-cache-dir -r requirements.txt -r requirements-dev.txt
+
+      - name: Run tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          PYTHONUNBUFFERED: '1'
+          SHOWSTOCK_DB_HOST: localhost
+          SHOWSTOCK_DB_PORT: 5432
+          SHOWSTOCK_DB_USER: postgres
+          SHOWSTOCK_DB_PASSWORD: postgres
+          SHOWSTOCK_DB_NAME: showstock_test
+        run: |
+          pytest --cov=showstock --cov-report=term --cov-report=xml:coverage.xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
