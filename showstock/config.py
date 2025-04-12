@@ -31,12 +31,12 @@ class DatabaseSettings(BaseSettings):
     def DATABASE_URL(self) -> PostgresDsn:
         """Construct PostgreSQL connection URL from components."""
         return PostgresDsn.build(
-            scheme="postgresql+psycopg2",
+            scheme="postgresql+asyncpg",
             username=self.USER,
             password=self.PASSWORD,
             host=self.HOST,
             port=self.PORT,
-            path=f"/{self.NAME}",
+            path=self.NAME,
         )
 
 
@@ -51,6 +51,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "Showstock"
     APP_DESCRIPTION: str = "Nutrition management for show livestock"
     DEBUG: bool = False
+    SECRET_KEY: str = "your-secret-key-here"  # Change this in production!
 
     # Database settings
     db: DatabaseSettings = DatabaseSettings()

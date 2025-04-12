@@ -12,16 +12,24 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.pool import QueuePool
+from sqlalchemy import text
 
 from showstock.config import settings
 
 # Configure logger
 logger = logging.getLogger(__name__)
 
+# SQLAlchemy declarative base
+Base = declarative_base()
+
+# Get database URL from settings
+db_url = str(settings.db.DATABASE_URL)
+
 # Create async SQLAlchemy engine with connection pooling
 engine = create_async_engine(
-    str(settings.db.DATABASE_URL).replace("postgresql+psycopg2", "postgresql+asyncpg"),
+    db_url,
     echo=settings.db.ECHO,
     pool_size=settings.db.POOL_SIZE,
     max_overflow=settings.db.MAX_OVERFLOW,
@@ -88,7 +96,7 @@ async def init_db() -> None:
     try:
         # Test connection by making a simple query
         async with engine.begin() as conn:
-            await conn.execute("SELECT 1")
+            await conn.execute(text("SELECT 1"))
         logger.info("Database connection established successfully")
     except Exception as e:
         logger.error(f"Database connection failed: {e}")
