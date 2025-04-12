@@ -58,6 +58,7 @@ jobs:
           SHOWSTOCK_DB_USER: postgres
           SHOWSTOCK_DB_PASSWORD: postgres
           SHOWSTOCK_DB_NAME: showstock_test
+          COVERAGE_FILE: ${{ github.workspace }}/.coverage
         run: |
           source .venv/bin/activate
           pytest --cov=showstock --cov-report=term --cov-report=xml:coverage.xml
