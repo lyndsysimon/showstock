@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/showstock
+    ports:
+      - "12000:8000"
+    volumes:
+      - ../:/app
+    networks:
+      - showstock-network
+
+  tests:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.tests
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/showstock_test
+    volumes:
+      - ../:/app
+    networks:
+      - showstock-network
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=showstock
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - showstock-network
+
+networks:
+  showstock-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
