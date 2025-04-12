@@ -12,6 +12,7 @@ Nutrition management for show livestock
 - SQLAlchemy ORM with async support
 - PostgreSQL database with connection pooling
 - Environment-based configuration
+- Fast package management with uv
 
 ## Development
 
@@ -19,6 +20,7 @@ Nutrition management for show livestock
 
 - Docker
 - Docker Compose
+- Python 3.12 or higher
 
 ### Configuration
 
@@ -50,11 +52,29 @@ docker compose -f docker/compose.yaml up tests
 To set up your development environment:
 
 ```bash
-# Run the setup script to install dev dependencies and pre-commit hooks
+# Run the setup script to install uv, dev dependencies and pre-commit hooks
 ./setup_dev.sh
 ```
 
-This will install all development dependencies and set up pre-commit hooks to ensure code quality.
+This will:
+1. Install uv if not already present
+2. Create a virtual environment
+3. Install all development dependencies
+4. Set up pre-commit hooks to ensure code quality
+
+### Package Management
+
+This project uses [uv](https://github.com/astral-sh/uv) for fast Python package management. Dependencies are managed through `pyproject.toml`.
+
+To add new dependencies:
+
+```bash
+# Add a production dependency
+uv pip install <package> && uv pip freeze > requirements.txt
+
+# Add a development dependency
+uv pip install <package> --group dev && uv pip freeze > requirements-dev.txt
+```
 
 ### Code Formatting
 
