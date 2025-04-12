@@ -52,7 +52,11 @@ jobs:
         env:
           PYTHONPATH: ${{ github.workspace }}
           PYTHONUNBUFFERED: '1'
-          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/showstock_test
+          SHOWSTOCK_DB_HOST: localhost
+          SHOWSTOCK_DB_PORT: 5432
+          SHOWSTOCK_DB_USER: postgres
+          SHOWSTOCK_DB_PASSWORD: postgres
+          SHOWSTOCK_DB_NAME: showstock_test
           COVERAGE_FILE: ${{ github.workspace }}/.coverage
         run: |
           source .venv/bin/activate
