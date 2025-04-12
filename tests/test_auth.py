@@ -16,6 +16,7 @@ async def test_login_success(client: TestClient, db: AsyncSession):
     response = client.post(
         "/auth/login",
         data={"username": "testuser", "password": "testpass"},
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     assert response.status_code == 200
     data = response.json()
@@ -33,6 +34,7 @@ async def test_login_invalid_credentials(client: TestClient, db: AsyncSession):
     response = client.post(
         "/auth/login",
         data={"username": "testuser", "password": "wrongpass"},
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     assert response.status_code == 401
     assert response.json()["detail"] == "Incorrect username or password"
@@ -41,6 +43,7 @@ async def test_login_invalid_credentials(client: TestClient, db: AsyncSession):
     response = client.post(
         "/auth/login",
         data={"username": "nonexistent", "password": "testpass"},
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     assert response.status_code == 401
     assert response.json()["detail"] == "Incorrect username or password"

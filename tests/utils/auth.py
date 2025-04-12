@@ -27,6 +27,7 @@ def get_auth_headers(client: TestClient, username: str, password: str) -> dict:
     response = client.post(
         "/auth/login",
         data={"username": username, "password": password},
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     assert response.status_code == 200
     token = response.json()["access_token"]
