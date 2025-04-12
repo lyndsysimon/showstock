@@ -9,20 +9,18 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv and add to PATH
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
-    echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && \
-    . ~/.bashrc
+# Install uv and configure PATH
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
 
 # Copy requirements files
 COPY requirements.txt .
 COPY requirements-dev.txt .
 COPY pyproject.toml .
 
-# Create and activate virtual environment, then install dependencies
-RUN . ~/.bashrc && \
-    uv venv .venv && \
-    . .venv/bin/activate && \
+# Install dependencies using uv
+RUN uv venv /app/.venv && \
+    . /app/.venv/bin/activate && \
     uv pip install --no-cache-dir -r requirements.txt -r requirements-dev.txt
 
 # Copy application code
@@ -32,9 +30,8 @@ COPY . .
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONPATH=/app \
-    PATH="/root/.local/bin:${PATH}" \
     VIRTUAL_ENV=/app/.venv \
-    PATH="/app/.venv/bin:${PATH}"
+    PATH="/app/.venv/bin:$PATH"
 
 # Create directory for coverage reports
 RUN mkdir -p /app/coverage
