@@ -6,9 +6,7 @@ from showstock.config import settings
 from showstock.db import get_db, init_db, close_db
 
 app = FastAPI(
-    title=settings.APP_NAME,
-    description=settings.APP_DESCRIPTION,
-    debug=settings.DEBUG
+    title=settings.APP_NAME, description=settings.APP_DESCRIPTION, debug=settings.DEBUG
 )
 
 
