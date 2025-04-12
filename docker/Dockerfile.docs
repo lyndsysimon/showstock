@@ -1,0 +1,17 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY pyproject.toml .
+RUN pip install -e ".[dev]"
+
+# Copy documentation files
+COPY docs/ docs/
+COPY mkdocs.yml .
+
+# Expose MkDocs port
+EXPOSE 8000
+
+# Start MkDocs server
+CMD ["mkdocs", "serve", "--dev-addr=0.0.0.0:8000"] 
