@@ -5,6 +5,13 @@
 
 Nutrition management for show livestock
 
+## Features
+
+- FastAPI web application
+- SQLAlchemy ORM with async support
+- PostgreSQL database with connection pooling
+- Environment-based configuration
+
 ## Development
 
 ### Prerequisites
@@ -12,12 +19,23 @@ Nutrition management for show livestock
 - Docker
 - Docker Compose
 
+### Configuration
+
+The application is configured using environment variables. Copy the `.env.example` file to `.env` and adjust the values as needed:
+
+```bash
+cp .env.example .env
+# Edit .env with your preferred editor
+```
+
 ### Running the Application
 
 ```bash
 # Start the application and database
 docker compose -f docker/compose.yaml up app db
 ```
+
+The application will be available at http://localhost:8000 by default.
 
 ### Running Tests
 
