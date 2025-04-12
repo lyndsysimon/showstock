@@ -1,6 +1,6 @@
 [run]
 source = showstock
-omit = 
+omit =
     */tests/*
     */migrations/*
     */settings/*

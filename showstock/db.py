@@ -2,6 +2,7 @@
 Database connection utility for the Showstock application.
 Provides a SQLAlchemy connection pool and session management.
 """
+
 import logging
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
@@ -41,10 +42,10 @@ async_session_factory = async_sessionmaker(
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     """
     Async context manager for database sessions.
-    
+
     Yields:
         AsyncSession: SQLAlchemy async session
-        
+
     Example:
         ```python
         async with get_db_session() as session:
@@ -66,10 +67,10 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """
     Async generator for database sessions.
-    
+
     Yields:
         AsyncSession: SQLAlchemy async session
-        
+
     Example:
         ```python
         @app.get("/items/")

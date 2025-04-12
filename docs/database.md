@@ -53,9 +53,9 @@ async def process_items():
     async with get_db_session() as session:
         result = await session.execute(select(Item))
         items = result.scalars().all()
-        
+
         # Process items...
-        
+
         # Commit changes
         await session.commit()
 ```
@@ -91,10 +91,10 @@ async def test_get_item(mock_db_session):
     """Test getting an item."""
     # Set up mock return value
     mock_db_session.execute.return_value.scalar_one_or_none.return_value = {"id": 1, "name": "Test Item"}
-    
+
     # Call the function that uses the database
     result = await get_item(1, mock_db_session)
-    
+
     # Assert the result
     assert result["id"] == 1
     assert result["name"] == "Test Item"
