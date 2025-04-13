@@ -4,10 +4,17 @@ from sqlalchemy import text
 
 from showstock.config import settings
 from showstock.db import get_db, init_db, close_db
+# Import models to register them with SQLAlchemy
+from showstock.models import Brand, Feed
+# Import API router
+from showstock.api import router as api_router
 
 app = FastAPI(
     title=settings.APP_NAME, description=settings.APP_DESCRIPTION, debug=settings.DEBUG
 )
+
+# Include API router
+app.include_router(api_router)
 
 
 @app.on_event("startup")
