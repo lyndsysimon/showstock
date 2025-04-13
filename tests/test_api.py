@@ -13,7 +13,7 @@ from showstock.models import Brand, Feed, FeedType
 
 
 @pytest.mark.asyncio
-async def test_create_brand(async_session: AsyncSession):
+async def test_create_brand(async_session: AsyncSession, override_get_db):
     """Test creating a brand via API."""
     client = TestClient(app)
     response = client.post(
@@ -33,7 +33,7 @@ async def test_create_brand(async_session: AsyncSession):
 
 
 @pytest.mark.asyncio
-async def test_get_brands(async_session: AsyncSession):
+async def test_get_brands(async_session: AsyncSession, override_get_db):
     """Test getting all brands."""
     # Create test brands
     brand1 = Brand(name="Brand 1")
@@ -51,7 +51,7 @@ async def test_get_brands(async_session: AsyncSession):
 
 
 @pytest.mark.asyncio
-async def test_get_brand(async_session: AsyncSession):
+async def test_get_brand(async_session: AsyncSession, override_get_db):
     """Test getting a brand by ID."""
     # Create test brand
     brand = Brand(name="Test Brand")
@@ -67,7 +67,7 @@ async def test_get_brand(async_session: AsyncSession):
 
 
 @pytest.mark.asyncio
-async def test_get_brand_not_found():
+async def test_get_brand_not_found(override_get_db):
     """Test getting a non-existent brand."""
     client = TestClient(app)
     response = client.get("/api/brands/999")
@@ -76,7 +76,7 @@ async def test_get_brand_not_found():
 
 
 @pytest.mark.asyncio
-async def test_create_feed(async_session: AsyncSession):
+async def test_create_feed(async_session: AsyncSession, override_get_db):
     """Test creating a feed."""
     # Create a brand first
     brand = Brand(name="Test Brand")
@@ -113,7 +113,7 @@ async def test_create_feed(async_session: AsyncSession):
 
 
 @pytest.mark.asyncio
-async def test_create_feed_invalid_brand():
+async def test_create_feed_invalid_brand(override_get_db):
     """Test creating a feed with an invalid brand ID."""
     client = TestClient(app)
     response = client.post(
@@ -129,7 +129,7 @@ async def test_create_feed_invalid_brand():
 
 
 @pytest.mark.asyncio
-async def test_get_feeds(async_session: AsyncSession):
+async def test_get_feeds(async_session: AsyncSession, override_get_db):
     """Test getting all feeds."""
     # Create a brand
     brand = Brand(name="Test Brand")
@@ -160,7 +160,7 @@ async def test_get_feeds(async_session: AsyncSession):
 
 
 @pytest.mark.asyncio
-async def test_get_feed(async_session: AsyncSession):
+async def test_get_feed(async_session: AsyncSession, override_get_db):
     """Test getting a feed by ID."""
     # Create a brand
     brand = Brand(name="Test Brand")
@@ -186,7 +186,7 @@ async def test_get_feed(async_session: AsyncSession):
 
 
 @pytest.mark.asyncio
-async def test_get_feed_not_found():
+async def test_get_feed_not_found(override_get_db):
     """Test getting a non-existent feed."""
     client = TestClient(app)
     response = client.get("/api/feeds/999")
