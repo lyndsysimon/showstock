@@ -88,7 +88,7 @@ async def create_feed(feed: FeedCreate, db: AsyncSession = Depends(get_db)):
     brand = result.scalar_one_or_none()
     if brand is None:
         raise HTTPException(status_code=404, detail="Brand not found")
-    
+
     # Create feed
     db_feed = Feed(
         brand_id=feed.brand_id,
@@ -96,7 +96,7 @@ async def create_feed(feed: FeedCreate, db: AsyncSession = Depends(get_db)):
         density=feed.density,
         feed_type=feed.feed_type,
         weight=feed.weight,
-        cost=feed.cost
+        cost=feed.cost,
     )
     db.add(db_feed)
     await db.commit()

@@ -11,12 +11,14 @@ from showstock.db import Base
 
 class FeedType(str, enum.Enum):
     """Enum for feed types."""
+
     PELLET = "pellet"
     PULVERIZED = "pulverized"
 
 
 class Brand(Base):
     """Brand model for feed manufacturers."""
+
     __tablename__ = "brands"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -31,6 +33,7 @@ class Brand(Base):
 
 class Feed(Base):
     """Feed model for animal feed products."""
+
     __tablename__ = "feeds"
 
     id = Column(Integer, primary_key=True, autoincrement=True)

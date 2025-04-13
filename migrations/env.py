@@ -66,7 +66,7 @@ def run_migrations_online() -> None:
     # For development purposes, we'll create the migration without connecting to the database
     # This is useful when we don't have a database connection available
     # In a production environment, you would use the commented-out code below
-    
+
     # Configure Alembic to use our metadata directly without a connection
     context.configure(
         url=config.get_main_option("sqlalchemy.url"),
@@ -82,7 +82,7 @@ def run_migrations_online() -> None:
 
     with context.begin_transaction():
         context.run_migrations()
-        
+
     # Original code for when database connection is available:
     """
     # For async SQLAlchemy, we need to get a sync engine for Alembic

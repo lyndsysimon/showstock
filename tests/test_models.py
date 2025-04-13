@@ -15,11 +15,13 @@ async def test_create_brand(async_session):
     brand = Brand(name="Test Brand")
     async_session.add(brand)
     await async_session.commit()
-    
+
     # Query the brand
-    result = await async_session.execute(select(Brand).filter(Brand.name == "Test Brand"))
+    result = await async_session.execute(
+        select(Brand).filter(Brand.name == "Test Brand")
+    )
     db_brand = result.scalar_one()
-    
+
     # Check the brand
     assert db_brand.id is not None
     assert db_brand.name == "Test Brand"
@@ -32,7 +34,7 @@ async def test_create_feed(async_session):
     brand = Brand(name="Test Brand")
     async_session.add(brand)
     await async_session.commit()
-    
+
     # Create a feed
     feed = Feed(
         brand_id=brand.id,
@@ -40,15 +42,15 @@ async def test_create_feed(async_session):
         density=1.5,
         feed_type=FeedType.PELLET,
         weight=50.0,
-        cost=25.99
+        cost=25.99,
     )
     async_session.add(feed)
     await async_session.commit()
-    
+
     # Query the feed
     result = await async_session.execute(select(Feed).filter(Feed.name == "Test Feed"))
     db_feed = result.scalar_one()
-    
+
     # Check the feed
     assert db_feed.id is not None
     assert db_feed.name == "Test Feed"
@@ -66,27 +68,17 @@ async def test_brand_feed_relationship(async_session):
     brand = Brand(name="Test Brand")
     async_session.add(brand)
     await async_session.commit()
-    
+
     # Create feeds for the brand
-    feed1 = Feed(
-        brand_id=brand.id,
-        name="Test Feed 1",
-        feed_type=FeedType.PELLET
-    )
-    feed2 = Feed(
-        brand_id=brand.id,
-        name="Test Feed 2",
-        feed_type=FeedType.PULVERIZED
-    )
+    feed1 = Feed(brand_id=brand.id, name="Test Feed 1", feed_type=FeedType.PELLET)
+    feed2 = Feed(brand_id=brand.id, name="Test Feed 2", feed_type=FeedType.PULVERIZED)
     async_session.add_all([feed1, feed2])
     await async_session.commit()
-    
+
     # Query the feeds for the brand
-    result = await async_session.execute(
-        select(Feed).filter(Feed.brand_id == brand.id)
-    )
+    result = await async_session.execute(select(Feed).filter(Feed.brand_id == brand.id))
     feeds = result.scalars().all()
-    
+
     # Check the feeds
     assert len(feeds) == 2
     assert any(feed.name == "Test Feed 1" for feed in feeds)

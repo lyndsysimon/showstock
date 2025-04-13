@@ -24,24 +24,24 @@ async def async_session():
         echo=False,
         connect_args={"check_same_thread": False},
     )
-    
+
     # Create all tables
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    
+
     # Create session
     async_session_factory = sessionmaker(
         engine, class_=AsyncSession, expire_on_commit=False
     )
-    
+
     # Yield session
     async with async_session_factory() as session:
         yield session
         # Roll back all changes after each test
         await session.rollback()
-    
+
     # Clean up
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
-    
+
     await engine.dispose()
