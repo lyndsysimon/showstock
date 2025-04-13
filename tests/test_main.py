@@ -1,6 +1,8 @@
+import pytest
 from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
-from showstock.main import app
+from showstock.main import app, startup_event, shutdown_event
 
 client = TestClient(app)
 
@@ -15,3 +17,17 @@ def test_health_check():
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "healthy"}
+
+
+@pytest.mark.asyncio
+async def test_db_test():
+    client = TestClient(app)
+    response = client.get("/db-test")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "connected"
+    assert data["test_value"] == 1
+
+
+# We'll skip testing startup/shutdown events directly since they require
+# a real database connection and are already covered by the other tests
