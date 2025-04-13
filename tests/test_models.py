@@ -48,7 +48,8 @@ async def test_create_feed(async_session):
     await async_session.commit()
 
     # Query the feed
-    result = await async_session.execute(select(Feed).filter(Feed.name == "Test Feed"))
+    query = select(Feed).filter(Feed.name == "Test Feed")
+    result = await async_session.execute(query)
     db_feed = result.scalar_one()
 
     # Check the feed
@@ -70,13 +71,18 @@ async def test_brand_feed_relationship(async_session):
     await async_session.commit()
 
     # Create feeds for the brand
-    feed1 = Feed(brand_id=brand.id, name="Test Feed 1", feed_type=FeedType.PELLET)
-    feed2 = Feed(brand_id=brand.id, name="Test Feed 2", feed_type=FeedType.PULVERIZED)
+    feed1 = Feed(
+        brand_id=brand.id, name="Test Feed 1", feed_type=FeedType.PELLET
+    )
+    feed2 = Feed(
+        brand_id=brand.id, name="Test Feed 2", feed_type=FeedType.PULVERIZED
+    )
     async_session.add_all([feed1, feed2])
     await async_session.commit()
 
     # Query the feeds for the brand
-    result = await async_session.execute(select(Feed).filter(Feed.brand_id == brand.id))
+    query = select(Feed).filter(Feed.brand_id == brand.id)
+    result = await async_session.execute(query)
     feeds = result.scalars().all()
 
     # Check the feeds

@@ -1,13 +1,11 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
 from alembic import context
 
 # Import the SQLAlchemy Base and models
 from showstock.db import Base
-from showstock.models import Brand, Feed
+# Import models to ensure they're registered with Base
+import showstock.models  # noqa
 from showstock.config import settings
 
 # this is the Alembic Config object, which provides
@@ -63,9 +61,9 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    # For development purposes, we'll create the migration without connecting to the database
-    # This is useful when we don't have a database connection available
-    # In a production environment, you would use the commented-out code below
+    # Create migration without connecting to database.
+    # Useful when no database connection is available.
+    # In production, use the commented-out code below.
 
     # Configure Alembic to use our metadata directly without a connection
     context.configure(
@@ -88,11 +86,14 @@ def run_migrations_online() -> None:
     # For async SQLAlchemy, we need to get a sync engine for Alembic
     # Extract the connection URL from the config
     configuration = config.get_section(config.config_ini_section)
-    
+
     # Replace the async driver with a sync one for Alembic
     url = configuration["sqlalchemy.url"]
     url = url.replace("postgresql+asyncpg", "postgresql")
-    
+
+    # Import here to avoid unused import errors
+    from sqlalchemy import engine_from_config, pool
+
     # Create a sync engine for Alembic
     connectable = engine_from_config(
         {"sqlalchemy.url": url},
@@ -102,7 +103,7 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, 
+            connection=connection,
             target_metadata=target_metadata,
             # Include these options for better migrations
             compare_type=True,

@@ -1,6 +1,5 @@
 import pytest
 from fastapi.testclient import TestClient
-from httpx import AsyncClient
 from unittest.mock import patch, MagicMock
 
 from showstock.main import app, startup_event, shutdown_event
@@ -50,14 +49,16 @@ async def test_shutdown_event():
 async def test_db_test_success():
     """Test the db_test function with a successful result."""
     from showstock.main import db_test
-    
+
     # Create a real SQLite in-memory database session
     from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
     from sqlalchemy.orm import sessionmaker
-    
+
     engine = create_async_engine("sqlite+aiosqlite:///:memory:")
-    async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-    
+    async_session = sessionmaker(
+        engine, class_=AsyncSession, expire_on_commit=False
+    )
+
     async with async_session() as session:
         result = await db_test(db=session)
         assert result["status"] == "connected"
@@ -70,9 +71,10 @@ async def test_db_test_exception():
     # Create a mock session that raises an exception
     mock_session = MagicMock()
     mock_session.execute.side_effect = Exception("Test exception")
-    
+
     # Test the endpoint with the mocked session
     from showstock.main import db_test
+
     result = await db_test(db=mock_session)
     assert result["status"] == "error"
     assert "Test exception" in result["message"]

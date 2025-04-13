@@ -2,14 +2,12 @@
 Tests for the database connection utility.
 """
 
-import os
 import pytest
 from unittest.mock import patch, AsyncMock, ANY
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import text
 
-from showstock.config import Settings, DatabaseSettings
+from showstock.config import DatabaseSettings
 from showstock.db import get_db, get_db_session, init_db, close_db
 
 
@@ -128,7 +126,7 @@ async def test_get_db(mock_session_factory):
 
         # Create a context that will raise an exception
         async def test_exception():
-            async with get_db_session() as session:
+            async with get_db_session() as _:
                 raise ValueError("Test exception")
 
         # Verify exception handling

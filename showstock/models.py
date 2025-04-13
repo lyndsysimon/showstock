@@ -48,4 +48,4 @@ class Feed(Base):
     brand = relationship("Brand", back_populates="feeds")
 
     def __repr__(self):
-        return f"<Feed(id={self.id}, name='{self.name}', brand_id={self.brand_id})>"
+        return f"<Feed({self.id}, '{self.name}', brand={self.brand_id})>"

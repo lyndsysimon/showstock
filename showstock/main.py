@@ -6,13 +6,15 @@ from showstock.config import settings
 from showstock.db import get_db, init_db, close_db
 
 # Import models to register them with SQLAlchemy
-from showstock.models import Brand, Feed
+import showstock.models  # noqa
 
 # Import API router
 from showstock.api import router as api_router
 
 app = FastAPI(
-    title=settings.APP_NAME, description=settings.APP_DESCRIPTION, debug=settings.DEBUG
+    title=settings.APP_NAME,
+    description=settings.APP_DESCRIPTION,
+    debug=settings.DEBUG,
 )
 
 # Include API router
@@ -34,7 +36,11 @@ async def shutdown_event():
 @app.get("/")
 async def root():
     """Root endpoint."""
-    return {"message": f"Welcome to {settings.APP_NAME} - {settings.APP_DESCRIPTION}"}
+    return {
+        "message": (
+            f"Welcome to {settings.APP_NAME} - {settings.APP_DESCRIPTION}"
+        )
+    }
 
 
 @app.get("/health")
