@@ -7,14 +7,17 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from fastapi.testclient import TestClient
+from unittest.mock import patch, MagicMock
 
 from showstock.main import app
 from showstock.models import Brand, Feed, FeedType
+from showstock.api import create_brand, get_brands, get_brand, create_feed, get_feeds, get_feed
 
 
 @pytest.mark.asyncio
 async def test_create_brand(async_session: AsyncSession, override_get_db):
     """Test creating a brand via API."""
+    # Test the API endpoint
     client = TestClient(app)
     response = client.post(
         "/api/brands",
@@ -30,6 +33,19 @@ async def test_create_brand(async_session: AsyncSession, override_get_db):
     brand = result.scalar_one_or_none()
     assert brand is not None
     assert brand.name == "Test Brand"
+    
+    # Test refresh functionality
+    brand.name = "Updated Brand"
+    await async_session.commit()
+    await async_session.refresh(brand)
+    assert brand.name == "Updated Brand"
+    
+    # Test the API function directly
+    from showstock.api import BrandCreate
+    brand_data = BrandCreate(name="Direct Test Brand")
+    new_brand = await create_brand(brand_data, async_session)
+    assert new_brand.name == "Direct Test Brand"
+    assert new_brand.id is not None
 
 
 @pytest.mark.asyncio
@@ -41,6 +57,7 @@ async def test_get_brands(async_session: AsyncSession, override_get_db):
     async_session.add_all([brand1, brand2])
     await async_session.commit()
 
+    # Test the API endpoint
     client = TestClient(app)
     response = client.get("/api/brands")
     assert response.status_code == 200
@@ -48,6 +65,12 @@ async def test_get_brands(async_session: AsyncSession, override_get_db):
     assert len(data) >= 2
     assert any(brand["name"] == "Brand 1" for brand in data)
     assert any(brand["name"] == "Brand 2" for brand in data)
+    
+    # Test the API function directly
+    brands = await get_brands(async_session)
+    assert len(brands) >= 2
+    assert any(brand.name == "Brand 1" for brand in brands)
+    assert any(brand.name == "Brand 2" for brand in brands)
 
 
 @pytest.mark.asyncio
@@ -58,12 +81,26 @@ async def test_get_brand(async_session: AsyncSession, override_get_db):
     async_session.add(brand)
     await async_session.commit()
 
+    # Test the API endpoint
     client = TestClient(app)
     response = client.get(f"/api/brands/{brand.id}")
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == brand.id
     assert data["name"] == "Test Brand"
+    
+    # Test the API function directly
+    db_brand = await get_brand(brand.id, async_session)
+    assert db_brand is not None
+    assert db_brand.id == brand.id
+    assert db_brand.name == "Test Brand"
+    
+    # Test not found case with API function
+    from fastapi import HTTPException
+    with pytest.raises(HTTPException) as excinfo:
+        await get_brand(9999, async_session)
+    assert excinfo.value.status_code == 404
+    assert excinfo.value.detail == "Brand not found"
 
 
 @pytest.mark.asyncio
@@ -83,6 +120,7 @@ async def test_create_feed(async_session: AsyncSession, override_get_db):
     async_session.add(brand)
     await async_session.commit()
 
+    # Test the API endpoint
     client = TestClient(app)
     response = client.post(
         "/api/feeds",
@@ -110,11 +148,36 @@ async def test_create_feed(async_session: AsyncSession, override_get_db):
     assert feed is not None
     assert feed.name == "Test Feed"
     assert feed.brand_id == brand.id
+    
+    # Test refresh functionality
+    feed.name = "Updated Feed"
+    await async_session.commit()
+    await async_session.refresh(feed)
+    assert feed.name == "Updated Feed"
+    
+    # Test the API function directly
+    from showstock.api import FeedCreate
+    feed_data = FeedCreate(
+        brand_id=brand.id,
+        name="Direct Test Feed",
+        density=2.0,
+        feed_type=FeedType.PELLET,
+        weight=75.0,
+        cost=30.99,
+    )
+    new_feed = await create_feed(feed_data, async_session)
+    assert new_feed.name == "Direct Test Feed"
+    assert new_feed.brand_id == brand.id
+    assert new_feed.density == 2.0
+    assert new_feed.feed_type == FeedType.PELLET
+    assert new_feed.weight == 75.0
+    assert new_feed.cost == 30.99
 
 
 @pytest.mark.asyncio
-async def test_create_feed_invalid_brand(override_get_db):
+async def test_create_feed_invalid_brand(async_session: AsyncSession, override_get_db):
     """Test creating a feed with an invalid brand ID."""
+    # Test the API endpoint
     client = TestClient(app)
     response = client.post(
         "/api/feeds",
@@ -126,6 +189,19 @@ async def test_create_feed_invalid_brand(override_get_db):
     )
     assert response.status_code == 404
     assert response.json()["detail"] == "Brand not found"
+    
+    # Test the API function directly
+    from showstock.api import FeedCreate
+    from fastapi import HTTPException
+    feed_data = FeedCreate(
+        brand_id=999,
+        name="Direct Test Feed",
+        feed_type=FeedType.PELLET,
+    )
+    with pytest.raises(HTTPException) as excinfo:
+        await create_feed(feed_data, async_session)
+    assert excinfo.value.status_code == 404
+    assert excinfo.value.detail == "Brand not found"
 
 
 @pytest.mark.asyncio
@@ -150,6 +226,7 @@ async def test_get_feeds(async_session: AsyncSession, override_get_db):
     async_session.add_all([feed1, feed2])
     await async_session.commit()
 
+    # Test the API endpoint
     client = TestClient(app)
     response = client.get("/api/feeds")
     assert response.status_code == 200
@@ -157,6 +234,12 @@ async def test_get_feeds(async_session: AsyncSession, override_get_db):
     assert len(data) >= 2
     assert any(feed["name"] == "Feed 1" for feed in data)
     assert any(feed["name"] == "Feed 2" for feed in data)
+    
+    # Test the API function directly
+    feeds = await get_feeds(async_session)
+    assert len(feeds) >= 2
+    assert any(feed.name == "Feed 1" for feed in feeds)
+    assert any(feed.name == "Feed 2" for feed in feeds)
 
 
 @pytest.mark.asyncio
@@ -176,6 +259,7 @@ async def test_get_feed(async_session: AsyncSession, override_get_db):
     async_session.add(feed)
     await async_session.commit()
 
+    # Test the API endpoint
     client = TestClient(app)
     response = client.get(f"/api/feeds/{feed.id}")
     assert response.status_code == 200
@@ -183,6 +267,19 @@ async def test_get_feed(async_session: AsyncSession, override_get_db):
     assert data["id"] == feed.id
     assert data["name"] == "Test Feed"
     assert data["brand_id"] == brand.id
+    
+    # Test the API function directly
+    db_feed = await get_feed(feed.id, async_session)
+    assert db_feed is not None
+    assert db_feed.id == feed.id
+    assert db_feed.name == "Test Feed"
+    
+    # Test not found case with API function
+    from fastapi import HTTPException
+    with pytest.raises(HTTPException) as excinfo:
+        await get_feed(9999, async_session)
+    assert excinfo.value.status_code == 404
+    assert excinfo.value.detail == "Feed not found"
 
 
 @pytest.mark.asyncio
