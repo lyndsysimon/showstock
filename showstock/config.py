@@ -3,9 +3,7 @@ Configuration module for the Showstock application.
 Loads configuration from environment variables.
 """
 
-import os
-from typing import Optional
-from pydantic import PostgresDsn, field_validator
+from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 

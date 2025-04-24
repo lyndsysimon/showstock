@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.orm import declarative_base
-from sqlalchemy.pool import QueuePool
+
 from sqlalchemy import text
 
 from showstock.config import settings
@@ -100,7 +100,7 @@ async def init_db() -> None:
         logger.info("Database connection established successfully")
     except Exception as e:
         logger.error(f"Database connection failed: {e}")
-        # In development mode, we might want to continue even if the database is not available
+        # In development mode, we might want to continue without database
         if settings.DEBUG:
             logger.warning("Running in DEBUG mode without database connection")
         else:
