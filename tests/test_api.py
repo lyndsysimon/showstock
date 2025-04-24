@@ -185,9 +185,7 @@ async def test_create_feed(async_session: AsyncSession, override_get_db):
 
 
 @pytest.mark.asyncio
-async def test_create_feed_invalid_brand(
-    async_session: AsyncSession, override_get_db
-):
+async def test_create_feed_invalid_brand(async_session: AsyncSession, override_get_db):
     """Test creating a feed with an invalid brand ID."""
     # Test the API endpoint
     client = TestClient(app)

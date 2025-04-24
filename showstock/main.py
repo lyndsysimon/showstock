@@ -36,11 +36,7 @@ async def shutdown_event():
 @app.get("/")
 async def root():
     """Root endpoint."""
-    return {
-        "message": (
-            f"Welcome to {settings.APP_NAME} - {settings.APP_DESCRIPTION}"
-        )
-    }
+    return {"message": (f"Welcome to {settings.APP_NAME} - {settings.APP_DESCRIPTION}")}
 
 
 @app.get("/health")

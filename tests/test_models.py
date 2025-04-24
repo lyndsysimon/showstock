@@ -71,12 +71,8 @@ async def test_brand_feed_relationship(async_session):
     await async_session.commit()
 
     # Create feeds for the brand
-    feed1 = Feed(
-        brand_id=brand.id, name="Test Feed 1", feed_type=FeedType.PELLET
-    )
-    feed2 = Feed(
-        brand_id=brand.id, name="Test Feed 2", feed_type=FeedType.PULVERIZED
-    )
+    feed1 = Feed(brand_id=brand.id, name="Test Feed 1", feed_type=FeedType.PELLET)
+    feed2 = Feed(brand_id=brand.id, name="Test Feed 2", feed_type=FeedType.PULVERIZED)
     async_session.add_all([feed1, feed2])
     await async_session.commit()
 

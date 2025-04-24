@@ -4,6 +4,7 @@ from alembic import context
 
 # Import the SQLAlchemy Base and models
 from showstock.db import Base
+
 # Import models to ensure they're registered with Base
 import showstock.models  # noqa
 from showstock.config import settings

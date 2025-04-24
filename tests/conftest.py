@@ -39,9 +39,7 @@ async def test_engine():
 @pytest_asyncio.fixture
 async def async_session_factory(test_engine):
     """Create a session factory for testing."""
-    return sessionmaker(
-        test_engine, class_=AsyncSession, expire_on_commit=False
-    )
+    return sessionmaker(test_engine, class_=AsyncSession, expire_on_commit=False)
 
 
 @pytest_asyncio.fixture
