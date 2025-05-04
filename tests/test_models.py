@@ -5,7 +5,8 @@ Tests for the database models.
 import pytest
 from sqlalchemy import select
 
-from showstock.models import Brand, Feed, FeedType
+from showstock.models import Brand, Feed
+from showstock.models.feed import FeedType
 
 
 @pytest.mark.asyncio
