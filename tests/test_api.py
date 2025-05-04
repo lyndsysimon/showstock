@@ -8,7 +8,8 @@ from sqlalchemy.future import select
 from fastapi.testclient import TestClient
 
 from showstock.main import app
-from showstock.models import Brand, Feed, FeedType
+from showstock.models import Brand, Feed
+from showstock.models.feed import FeedType
 from showstock.api import (
     create_brand,
     get_brands,

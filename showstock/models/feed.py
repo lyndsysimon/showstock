@@ -1,5 +1,5 @@
 """
-Database models for the Showstock application.
+Feed-related models for the Showstock application.
 """
 
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Enum

@@ -9,7 +9,8 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 from showstock.db import get_db
-from showstock.models import Brand, Feed, FeedType
+from showstock.models import Brand, Feed
+from showstock.models.feed import FeedType
 
 # Create API router
 router = APIRouter(prefix="/api", tags=["api"])
