@@ -7,6 +7,21 @@ from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+class AppConfig:
+    """
+    Singleton class to represent the web application's configuration.
+    This class follows the Singleton pattern to ensure only one instance exists.
+    """
+    _instance = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(AppConfig, cls).__new__(cls)
+            # Initialize with default values
+            cls._instance.salt = "default-salt-value-change-in-production"
+        return cls._instance
+
+
 class DatabaseSettings(BaseSettings):
     """Database connection settings loaded from environment variables."""
 
@@ -57,3 +72,6 @@ class Settings(BaseSettings):
 
 # Create a global settings instance
 settings = Settings()
+
+# Create a global app configuration instance
+app_config = AppConfig()
