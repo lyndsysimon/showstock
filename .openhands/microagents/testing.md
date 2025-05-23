@@ -4,11 +4,7 @@ type: knowledge
 version: 1.0.0
 agent: CodeActAgent
 triggers:
-  - "run tests"
-  - "testing"
-  - "test coverage"
-  - "pytest"
-  - "run the tests"
+  - "test"
 ---
 
 # Showstock Testing Guide
@@ -22,6 +18,7 @@ Showstock uses pytest for testing with the following features:
 - Test coverage reporting with pytest-cov
 - Asynchronous test support with pytest-asyncio
 - PostgreSQL database integration for testing
+- Singleton pattern testing for configuration objects
 
 ## Running Tests
 
@@ -65,6 +62,29 @@ Tests are automatically run on GitHub Actions:
 - On every push to the main branch
 - On every pull request to the main branch
 - Coverage reports are uploaded to Codecov.io
+
+## Configuration Tests
+
+The project includes tests for the configuration system:
+
+### AppConfig Tests
+
+The `tests/test_config.py` file contains tests for the `AppConfig` singleton class:
+
+- `test_app_config_singleton()`: Verifies that the `AppConfig` class follows the singleton pattern
+  - Ensures multiple instances reference the same object
+  - Confirms that changes to one instance affect all instances
+
+- `test_app_config_salt()`: Tests the salt attribute functionality
+  - Verifies the default salt value is set correctly
+  - Tests setting and getting the salt value
+  - Ensures the salt value persists across instances
+
+To run these tests specifically:
+
+```bash
+docker compose -f docker/compose.yaml up tests -- -k test_config
+```
 
 ## Troubleshooting
 
