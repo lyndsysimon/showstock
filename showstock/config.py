@@ -6,21 +6,18 @@ Loads configuration from environment variables.
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from showstock.utils import SingletonMeta
 
-class AppConfig:
+
+class AppConfig(metaclass=SingletonMeta):
     """
     Singleton class to represent the web application's configuration.
-    This class follows the Singleton pattern to ensure only one instance exists.
+    This class uses the SingletonMeta metaclass to ensure only one instance exists.
     """
 
-    _instance = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(AppConfig, cls).__new__(cls)
-            # Initialize with default values
-            cls._instance.salt = "default-salt-value-change-in-production"
-        return cls._instance
+    def __init__(self):
+        """Initialize the configuration with default values."""
+        self.salt = "default-salt-value-change-in-production"
 
 
 class DatabaseSettings(BaseSettings):
