@@ -12,8 +12,9 @@ class AppConfig:
     Singleton class to represent the web application's configuration.
     This class follows the Singleton pattern to ensure only one instance exists.
     """
+
     _instance = None
-    
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(AppConfig, cls).__new__(cls)
