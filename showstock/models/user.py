@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+# Use the shared declarative Base from the application's database module
+from showstock.db import Base
 
 
 class User(Base):
