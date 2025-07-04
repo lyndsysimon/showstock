@@ -109,6 +109,7 @@ async def test_get_db(mock_session_factory):
     # Use the generator
     db_gen = get_db()
     session = await anext(db_gen)
+    await db_gen.aclose()
 
     # Verify we got the session
     assert session == mock_session
