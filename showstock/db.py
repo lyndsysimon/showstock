@@ -81,9 +81,9 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
     Example:
         ```python
-        @app.get("/items/")
-        async def get_items(db: AsyncSession = Depends(get_db)):
-            result = await db.execute(select(Item))
+        @app.get("/feeds/")
+        async def get_feeds(db: AsyncSession = Depends(get_db)):
+            result = await db.execute(select(Feed))
             return result.scalars().all()
         ```
     """
