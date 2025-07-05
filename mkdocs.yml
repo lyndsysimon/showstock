@@ -1,0 +1,10 @@
+site_name: Showstock
+site_description: Nutrition management for show livestock
+docs_dir: docs
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - Codex:
+      - "AppConfig Usage": codex/app_config_usage.md
+      - "Database Connection": codex/database.md
