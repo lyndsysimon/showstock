@@ -53,9 +53,7 @@ async def process_items():
     async with get_db_session() as session:
         result = await session.execute(select(Item))
         items = result.scalars().all()
-
         # Process items...
-
         # Commit changes
         await session.commit()
 ```
