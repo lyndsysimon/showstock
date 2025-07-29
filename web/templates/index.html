@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Showstock</title>
+</head>
+<body>
+    <h1>Showstock</h1>
+    <h2>Brands</h2>
+    <ul>
+        {% for brand in brands %}
+        <li>{{ brand.name }}</li>
+        {% else %}
+        <li>No brands found.</li>
+        {% endfor %}
+    </ul>
+    <h2>Feeds</h2>
+    <ul>
+        {% for feed in feeds %}
+        <li>{{ feed.name }} ({{ feed.feed_type }})</li>
+        {% else %}
+        <li>No feeds found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
