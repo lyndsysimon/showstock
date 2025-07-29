@@ -38,7 +38,19 @@ cp .env.example .env
 docker compose -f docker/compose.yaml up app db
 ```
 
-The application will be available at http://localhost:8000 by default.
+The API will be available at http://localhost:8000 by default.
+
+### Running the Web Frontend
+
+During development you can launch a lightweight frontend server with
+`uvicorn`:
+
+```bash
+uvicorn web.main:app --reload
+```
+
+This serves a minimal HTML page that renders data from the API using
+Jinja2 templates. By default it listens on http://localhost:8000.
 
 ### Running Tests
 
